@@ -5,10 +5,15 @@ import gridcreative.adventofcode.measurements.Mass;
 import gridcreative.adventofcode.measurements.Volume;
 
 public class SpaceCraftModule {
+	public static SpaceCraftModule createSpaceCraftModule(Mass mass) {
+		return new SpaceCraftModule(mass);
+	}
+
+
 	private final Mass mass ;
 	private final FuelCalculator fuelCalculator;
 
-	public SpaceCraftModule(Mass mass) {
+	private SpaceCraftModule(Mass mass) {
 		this.fuelCalculator = new SpaceCraftModuleFuelCalculator(this);
 	
 		this.mass = mass;

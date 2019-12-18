@@ -1,36 +1,47 @@
 package gridcreative.adventofcode.calculators;
 
+import gridcreative.adventofcode.exceptions.InvalidOpcodeException;
+import gridcreative.adventofcode.spacecrafts.Address;
+import gridcreative.adventofcode.spacecrafts.Memory;
+
 public class IntCodeProgram {
-	private final int[] intcodes;
+	private final Memory intcodes;
 
 	public IntCodeProgram(int[] intcodes) {
-		this.intcodes = intcodes;
+		this.intcodes = Memory.createMemory(intcodes) ;
 	}
 
-	public int[] Run() {
+	public Address[] Run(int noun,int verb) throws InvalidOpcodeException {
+		
+		intcodes.setNoun(noun);
+		intcodes.setVerb(verb);
 		int opcodeCounter = 0;
-		int opcode = intcodes[opcodeCounter];
+		int opcode = intcodes.getAddressAtPosition(opcodeCounter).getCode();
 
 		while (opcode != 99) {
-			int x = intcodes[intcodes[opcodeCounter + 1]];
-			int y = intcodes[intcodes[opcodeCounter + 2]];
-			int overwritePosition = intcodes[opcodeCounter + 3];
+			int leftParameterPointer = intcodes.getAddressAtPosition(++opcodeCounter).getCode();
+			int leftParameter = intcodes.getAddressAtPosition(leftParameterPointer).getCode();
+			
+			int rightParameterPointer = intcodes.getAddressAtPosition(++opcodeCounter).getCode();
+			int rightParameter = intcodes.getAddressAtPosition(rightParameterPointer).getCode();
+			
+			int overwritePosition = intcodes.getAddressAtPosition(++opcodeCounter).getCode();
 
+			int instructionResult;
 			if (opcode == 1) {
-
-				Integer addResult = x + y;
-				intcodes[overwritePosition] = addResult;
-
+				instructionResult = leftParameter + rightParameter;
 			} else if (opcode == 2) {
-				Integer addResult = x * y;
-				intcodes[overwritePosition] = addResult;
+				instructionResult = leftParameter * rightParameter;
+			}else {
+				throw new InvalidOpcodeException(String.format("opcode with value {0} is not valid! ", opcode));
 			}
 			
-			opcodeCounter += 4;
-			opcode = intcodes[opcodeCounter];
+			intcodes.setAddressAtPosition(overwritePosition, Address.createAddress(instructionResult));
+			
+			opcode = intcodes.getAddressAtPosition(++opcodeCounter).getCode();
 		}
 		
-		return intcodes;
+		return intcodes.getAddressess();
 	}
 
 }

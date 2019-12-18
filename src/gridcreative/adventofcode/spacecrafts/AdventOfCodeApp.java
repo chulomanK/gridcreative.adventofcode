@@ -23,7 +23,7 @@ public class AdventOfCodeApp {
 
 					Mass mass = new Mass(Integer.parseInt(massAsString));
 					
-					var module = new SpaceCraftModule(mass);
+					var module = SpaceCraftModule.createSpaceCraftModule(mass);
 					totalFuelRequired += module.getRequiredFuel().getAmount();
 				}
 
